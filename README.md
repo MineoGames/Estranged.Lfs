@@ -81,6 +81,31 @@ There are currently two hosting examples:
 
 The former is a simple example using only Asp.NET components, and the latter is an Asp.NET Lambda function which can be deployed directly to AWS Lambda, behind API Gateway.
 
+### Asp.NET version
+
+1. Edit this line to suit to your environment (using _aws_access_key_id_ and _aws_secret_access_key_ of the .aws/credential file)
+`services.AddLfsS3Adapter(new S3BlobAdapterConfig{Bucket = "objectContainerName"}, new AmazonS3Client("MyAccesKeyAWS", "MyAccesSecretAWS", new AmazonS3Config { ServiceURL = "https://s3.MyPublicRegionLowerCase.cloud.ovh.net" }));`
+           
+
+2. It can be launched in VS by choosing _Estranged.Lfs.Hosting.AspNet_ (not the default _IIS Express_ option that doesnt work).
+
+ ![image](https://user-images.githubusercontent.com/2952456/89800274-d82c9380-db2e-11ea-85bb-3fc8652e3e9d.png)
+3. Or it can be published in folder, then launched with _Estranged.Lfs.Hosting.AspNet.exe_
+4. This is a console application that is listening for HTTP LFS requests on https://localhost:5001
+
+![image](https://user-images.githubusercontent.com/2952456/89800695-6739ab80-db2f-11ea-8641-0eab8c501381.png)
+
+5. Change the .lfconfig to send request to the console app
+```
+[lfs]
+url = https://localhost:5001/
+```
+6. From git repo Commit lfs file and Push, and enter when asked the user and password set by this line 
+`  services.AddSingleton<IAuthenticator>(x => new DictionaryAuthenticator(new Dictionary<string, string> { { "userAskedBySourceTree", "passwordAskedBySourceTree" } }));`
+
+7. The pushed file is now present in OVH Object Storage
+![image](https://user-images.githubusercontent.com/2952456/89806464-5e4cd800-db37-11ea-85bd-9ce724e7ee0e.png)
+
 #### Deploying to Lambda
 
 1. Head over to the `Estranged.Lfs.Hosting.Lambda` project in the `hosting` folder.

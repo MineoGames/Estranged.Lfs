@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <Version>3.0.0</Version>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -11,14 +10,14 @@
     <AssemblyName>Estranged.Lfs.Adapter.S3</AssemblyName>
     <RootNamespace>Estranged.Lfs.Adapter.S3</RootNamespace>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>D:\GitBuilds\Estranged.Lfs\Backup1\src\Estranged.Lfs.Adapter.S3\</UpgradeBackupLocation>
+    <OldToolsVersion>15.0</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.111.20" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Estranged.Lfs.Data\Estranged.Lfs.Data.csproj" />
   </ItemGroup>
-
 </Project>

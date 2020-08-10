@@ -14,7 +14,7 @@ namespace Estranged.Lfs.Hosting.AspNet
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            IConfiguration credentials = new ConfigurationBuilder().AddJsonFile("credentials.json").Build();
+            //IConfiguration credentials = new ConfigurationBuilder().AddJsonFile("credentials.json").Build();
 
             services.AddLogging(x =>
             {
@@ -23,8 +23,8 @@ namespace Estranged.Lfs.Hosting.AspNet
             });
 
             services.AddSingleton<IAmazonS3, AmazonS3Client>();
-            services.AddLfsS3Adapter(new S3BlobAdapterConfig{Bucket = "estranged-lfs-test"}, new AmazonS3Client());
-            services.AddSingleton<IAuthenticator>(x => new DictionaryAuthenticator(new Dictionary<string, string> { { "usernametest", "passwordtest" } }));
+            services.AddLfsS3Adapter(new S3BlobAdapterConfig{Bucket = "test-ovh"}, new AmazonS3Client("MyAccesKeyAWS", "MyAccesSecretAWS", new AmazonS3Config { ServiceURL = "https://s3.sbg.cloud.ovh.net" }));
+            services.AddSingleton<IAuthenticator>(x => new DictionaryAuthenticator(new Dictionary<string, string> { { "userAskedBySourceTree", "passwordAskedBySourceTree" } }));
             services.AddLfsApi();
         }
 
