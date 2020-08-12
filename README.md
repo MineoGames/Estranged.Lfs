@@ -110,22 +110,22 @@ url = https://localhost:5001/
 
 1. Head over to the `Estranged.Lfs.Hosting.Lambda` project in the `hosting` folder.
 2. Install the `dotnet-lambda` global tool from AWS: https://github.com/aws/aws-extensions-for-dotnet-cli
-3. Edit the `aws-lambda-tools-defaults.json` file to suit your environment setup:
+3. Be sure to have .aws/config and .aws/credentials configured with AWS connexion on default profile.  
+4. Edit the `aws-lambda-tools-defaults.json` file to suit your environment setup:
 ```javascript
 {
-    "profile": "default",
-    "configuration": "Release",
-    "framework": "netcoreapp3.1",
-    "function-handler": "Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync",
-    "function-memory-size": 256,
-    "function-timeout": 30,
-    "function-runtime": "dotnetcore3.1",
-    "region": "<aws region>",
-    "s3-bucket": "<s3 bucket to upload the lambda to>",
-    "s3-prefix": "<path in s3 to upload the lambda to>",
-    "function-name": "<lambda name to deploy or update>",
-    // Set other variables required by the Lambda function
-    "environment-variables": "LFS_BUCKET=<lfs s3 bucket>;<key>=<value>"
+  "configuration": "Release",
+  "environment-variables": "LFS_BUCKET=OVH_ObjectStorage_Name;LFS_USERNAME=AWS_STACK_ParameterUsername;LFS_PASSWORD=AWS_STACK_ParameterPassword;S3_ACCESS_KEY=OVH_AccesKeyAWS;S3_ACCESS_SECRET=OVH_AccesSecretAWS;S3_REGION=OVH_Region",
+  "framework": "netcoreapp3.1",
+  "function-handler": "Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync",
+  "function-memory-size": 256,
+  "function-name": "AWS_STACK_LAMBDA_NAME",
+  "function-runtime": "dotnetcore3.1",
+  "function-timeout": 30,
+  "profile": "default",
+  "region": "eu-west-1",
+  "s3-bucket": "AWS_STACK_S3_NAME"
 }
 ```
-4. Run `dotnet-lambda deploy-serverless` to deploy the Lambda function
+5. Run `dotnet lambda deploy-serverless AWS_STACK_NAME --template-parameters GitLfsUsername=AWS_STACK_ParameterUsername;GitLfsPassword=AWS_STACK_ParameterPassword -t modele.yaml ` to deploy the stack
+6. Run `dotnet lambda deploy-function` to deploy the code of the function
