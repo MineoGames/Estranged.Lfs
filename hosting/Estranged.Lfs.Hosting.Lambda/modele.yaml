@@ -69,13 +69,6 @@ Resources:
                     LFS_BUCKET: !Ref StorageBucket
                     LFS_USERNAME: !Ref GitLfsUsername
                     LFS_PASSWORD: !Ref GitLfsPassword
-                    GITHUB_ORGANISATION! !Ref GitOrganisation
-                    GITHUB_REPOSITORY! !Ref GitHubRepositoryVariable
-                    BITBUCKET_WORKSPACE: !Ref BitBucketWorkspaceVariable
-                    BITBUCKET_REPOSITORY: !Ref BitBucketRepositoryVariable
-                    S3Region: !Ref S3_REGION
-                    S3AccessKey: !Ref S3_ACCESS_KEY
-                    S3AccessSecret: !Ref S3_ACCESS_SECRET
     SigningLambdaGatewayPermission:
         Type: AWS::Lambda::Permission
         Properties: 

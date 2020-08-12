@@ -1,5 +1,6 @@
-# Estranged.Lfs ![Build status](https://github.com/alanedwardes/Estranged.Lfs/workflows/.NET%20Core/badge.svg)
+# Estranged.Lfs ![Build status](https://github.com/mineogames/Estranged.Lfs/workflows/.NET%20Core/badge.svg)
 A Git LFS backend which provides pluggable authentication and blob store adapters. It is designed to run in a serverless environment to be used in conjunction with a Git provider such as GitHub or BitBucket, or self hosted Git.
+# This a modified version to work with OVH Object Storage instead of AWS S3.
 
 ## Basic Usage
 1. Add the Git LFS services to your application:
@@ -115,17 +116,22 @@ url = https://localhost:5001/
 ```javascript
 {
   "configuration": "Release",
-  "environment-variables": "LFS_BUCKET=OVH_ObjectStorage_Name;LFS_USERNAME=AWS_STACK_ParameterUsername;LFS_PASSWORD=AWS_STACK_ParameterPassword;S3_ACCESS_KEY=OVH_AccesKeyAWS;S3_ACCESS_SECRET=OVH_AccesSecretAWS;S3_REGION=OVH_Region",
+  "environment-variables": "LFS_BUCKET=OVH_ObjectStorage_Name;LFS_USERNAME=AWS_STACK_ParameterUsername;LFS_PASSWORD=AWS_STACK_ParameterPassword;S3_ACCESS_KEY=OVH_AccesKeyAWS;S3_ACCESS_SECRET=OVH_AccesSecretAWS;S3_REGION=OVH_Region", // can be found and changed in Lambda configuration UI
   "framework": "netcoreapp3.1",
   "function-handler": "Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync",
   "function-memory-size": 256,
-  "function-name": "AWS_STACK_LAMBDA_NAME",
+  "function-name": "AWS_STACK_NAME", // lambda name must be same as stack name
   "function-runtime": "dotnetcore3.1",
   "function-timeout": 30,
-  "profile": "default",
-  "region": "eu-west-1",
-  "s3-bucket": "AWS_STACK_S3_NAME"
+  "profile": "default", // AWS connexion profile
+  "region": "eu-west-1", // AWS public region
+  "s3-bucket": "AWS_SHARED_BETWEEN_STACK_S3_NAME" // a S3 bucket is needed to upload the modele/output of the stack, must be outside of the stack (shared between all stacks) 
 }
 ```
 5. Run `dotnet lambda deploy-serverless AWS_STACK_NAME --template-parameters GitLfsUsername=AWS_STACK_ParameterUsername;GitLfsPassword=AWS_STACK_ParameterPassword -t modele.yaml ` to deploy the stack
-6. Run `dotnet lambda deploy-function` to deploy the code of the function
+6. Run `dotnet lambda deploy-function` to deploy the code of the lambda function
+7. Change the .lfconfig of the GIT project to send requests to the lambda function (the URL was in 5. output)
+```
+[lfs]
+url = https://9w45qpo957.execute-api.eu-west-1.amazonaws.com/lfs
+```
