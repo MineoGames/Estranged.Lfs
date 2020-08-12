@@ -91,12 +91,15 @@ The former is a simple example using only Asp.NET components, and the latter is 
 2. It can be launched in VS by choosing _Estranged.Lfs.Hosting.AspNet_ (not the default _IIS Express_ option that doesnt work).
 
  ![image](https://user-images.githubusercontent.com/2952456/89800274-d82c9380-db2e-11ea-85bb-3fc8652e3e9d.png)
+ 
 3. Or it can be published in folder, then launched with _Estranged.Lfs.Hosting.AspNet.exe_
+
 4. This is a console application that is listening for HTTP LFS requests on https://localhost:5001
 
 ![image](https://user-images.githubusercontent.com/2952456/89800695-6739ab80-db2f-11ea-8641-0eab8c501381.png)
 
 5. Change the .lfconfig to send request to the console app
+
 ```
 [lfs]
 url = https://localhost:5001/
@@ -135,3 +138,16 @@ url = https://localhost:5001/
 [lfs]
 url = https://9w45qpo957.execute-api.eu-west-1.amazonaws.com/lfs
 ```
+8. Commit and push LFS files, when prompt enter AWS_STACK_ParameterUsername and AWS_STACK_ParameterPassword, the files can be seen in OHV Storage !
+
+**Instead of using user/password authentication, it is possible to use Github or Bitbucket authentication.**
+
+Edit the `aws-lambda-tools-defaults.json` file and redeploy the lambda (or edit directly in the lambda UI)
+
+(example with github):
+
+ ``` "environment-variables": "GITHUB_ORGANISATION=REPO_ORGANISATION,GITHUB_REPOSITORY=REPO_NAME,..."```
+ 
+ (example with bitbucket):
+ 
+ ``` "environment-variables": "BITBUCKET_WORKSPACE=REPO_WORKSPACE,BITBUCKET_REPOSITORY=REPO_NAME,..."```
