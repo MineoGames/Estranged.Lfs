@@ -84,7 +84,7 @@ The former is a simple example using only Asp.NET components, and the latter is 
 
 ### Asp.NET version
 
-1. Edit this line to suit to your environment (using _aws_access_key_id_ and _aws_secret_access_key_ of the .aws/credential file)
+1. Edit this line to suit to your environment (using _aws_access_key_id_ and _aws_secret_access_key_ of the .aws/credential file > ovh profile)
 `services.AddLfsS3Adapter(new S3BlobAdapterConfig{Bucket = "objectContainerName"}, new AmazonS3Client("MyAccesKeyAWS", "MyAccesSecretAWS", new AmazonS3Config { ServiceURL = "https://s3.MyPublicRegionLowerCase.cloud.ovh.net" }));`
            
 
