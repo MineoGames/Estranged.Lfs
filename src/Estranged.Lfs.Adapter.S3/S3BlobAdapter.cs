@@ -43,6 +43,8 @@ namespace Estranged.Lfs.Adapter.S3
             }
             catch (AmazonS3Exception ex)
             {
+                Console.WriteLine($"[ERROR] - {ex.StatusCode} - {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
                 return new SignedBlob
                 {
                     ErrorCode = (int)ex.StatusCode,
