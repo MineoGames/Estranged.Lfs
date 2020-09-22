@@ -15,6 +15,7 @@ namespace Estranged.Lfs.Hosting.AspNet
         public void ConfigureServices(IServiceCollection services)
         {
             //IConfiguration credentials = new ConfigurationBuilder().AddJsonFile("credentials.json").Build();
+            var myEndpointRegion = "sbg";
 
             services.AddLogging(x =>
             {
@@ -23,7 +24,7 @@ namespace Estranged.Lfs.Hosting.AspNet
             });
 
             services.AddSingleton<IAmazonS3, AmazonS3Client>();
-            services.AddLfsS3Adapter(new S3BlobAdapterConfig{Bucket = "test-ovh"}, new AmazonS3Client("MyAccesKeyAWS", "MyAccesSecretAWS", new AmazonS3Config { ServiceURL = "https://s3.sbg.cloud.ovh.net" }));
+            services.AddLfsS3Adapter(new S3BlobAdapterConfig{Bucket = "test-ovh"}, new AmazonS3Client("MyAccesKeyAWS", "MyAccesSecretAWS", new AmazonS3Config { ServiceURL = $"https://s3.{myEndpointRegion}.cloud.ovh.net", AuthenticationRegion= myEndpointRegion }));
             services.AddSingleton<IAuthenticator>(x => new DictionaryAuthenticator(new Dictionary<string, string> { { "userAskedBySourceTree", "passwordAskedBySourceTree" } }));
             services.AddLfsApi();
         }
