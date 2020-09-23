@@ -79,7 +79,7 @@ namespace Estranged.Lfs.Hosting.Lambda
                 throw new InvalidOperationException($"Uncomplete S3 configuration. Please set S3_REGION : Object Storage OVH public region in lower case without number (ex: sbg). Please set S3_ACCESS_KEY: from RC file. Please set S3_ACCESS_SECRET: from RC file. See https://docs.ovh.com/gb/en/public-cloud/access_and_security_in_horizon/");
             }
 
-            services.AddLfsS3Adapter(new S3BlobAdapterConfig { Bucket = lfsBucket }, new AmazonS3Client(s3AccessKey, s3AccessSecret, new AmazonS3Config { UseAccelerateEndpoint = s3Acceleration, ServiceURL = $"https://s3.{s3Region}.cloud.ovh.net", AuthenticationRegion = $"{s3Region}" }));
+            services.AddLfsS3Adapter(new S3BlobAdapterConfig { Bucket = lfsBucket }, new AmazonS3Client(s3AccessKey, s3AccessSecret, new AmazonS3Config { UseAccelerateEndpoint = s3Acceleration, ServiceURL = $"https://s3.{s3Region}.cloud.ovh.net", AuthenticationRegion = $"{s3Region}", SignatureVersion = "V4" }));
             services.AddLfsApi();
 
             services.AddLogging(x => x.AddLambdaLogger());

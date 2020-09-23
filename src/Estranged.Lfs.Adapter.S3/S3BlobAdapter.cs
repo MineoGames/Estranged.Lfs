@@ -64,12 +64,8 @@ namespace Estranged.Lfs.Adapter.S3
         {
             return Task.FromResult(new SignedBlob
             {
-                Uri = MakePreSignedUrl(oid, HttpVerb.PUT, BlobConstants.UploadMimeType),
-                Expiry = config.Expiry,
-                Headers = new Dictionary<string, string>
-                {
-                    {"Content-Type", BlobConstants.UploadMimeType}
-                }
+                Uri = MakePreSignedUrl(oid, HttpVerb.PUT, null),
+                Expiry = config.Expiry
             });
         }
     }
