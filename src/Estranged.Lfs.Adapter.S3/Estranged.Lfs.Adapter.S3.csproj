@@ -15,7 +15,7 @@
     <OldToolsVersion>15.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.5.1.7" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.103" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Estranged.Lfs.Data\Estranged.Lfs.Data.csproj" />
