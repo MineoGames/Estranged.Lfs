@@ -5,7 +5,7 @@
   "function-handler": "Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync",
   "function-memory-size": 256,
   "function-name": "AWS_STACK_LAMBDA_NAME",
-  "function-runtime": "dotnetcore3.1",
+  "function-runtime": "dotnetcore6.0",
   "function-timeout": 30,
   "profile": "default",
   "region": "eu-west-1",

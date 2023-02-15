@@ -54,8 +54,8 @@ namespace Estranged.Lfs.Hosting.Lambda
             // If all authentication mechanims are set, or none are set throw an error
             if (new[] {isDictionaryAuthentication, isGitHubAuthentication, isBitBucketAuthentication}.Count(x => x) != 1)
             {
-                throw new InvalidOperationException($"Unable to detect authentication mechanism. Please set {LfsUsernameVariable} and {LfsPasswordVariable} for simple user/password auth" +
-                                                    $" or {GitHubOrganisationVariable} or {GitHubRepositoryVariable} for authentication against that repository on GitHub");
+                throw new InvalidOperationException($"Unable to detect authentication mechanism. Please set either {LfsUsernameVariable} and {LfsPasswordVariable} for simple user/password auth" +
+                                                    $" or {GitHubOrganisationVariable} or {GitHubRepositoryVariable} for authentication against that repository on GitHub or {BitBucketWorkspaceVariable} or {BitBucketRepositoryVariable} for authentication against that repository on Bitbucket");
             }
 
             if (isDictionaryAuthentication)

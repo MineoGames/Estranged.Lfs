@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <FileUpgradeFlags>40</FileUpgradeFlags>
     <UpgradeBackupLocation>D:\GitBuilds\Estranged.Lfs\Backup1\tests\Estranged.Lfs.Tests\</UpgradeBackupLocation>
