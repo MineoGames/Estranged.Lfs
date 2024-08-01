@@ -15,7 +15,7 @@
     <OldToolsVersion>15.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Octokit" Version="0.48.0" />
+    <PackageReference Include="Octokit" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Estranged.Lfs.Data\Estranged.Lfs.Data.csproj" />
