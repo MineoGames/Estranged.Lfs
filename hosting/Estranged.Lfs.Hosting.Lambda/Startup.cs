@@ -1,16 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Amazon.S3;
+using Estranged.Lfs.Adapter.Azure.Blob;
+using Estranged.Lfs.Adapter.S3;
+using Estranged.Lfs.Api;
+using Estranged.Lfs.Authenticator.BitBucket;
+using Estranged.Lfs.Authenticator.GitHub;
+using Estranged.Lfs.Data;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Estranged.Lfs.Api;
-using Estranged.Lfs.Adapter.S3;
-using Amazon.S3;
-using Estranged.Lfs.Data;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
-using Estranged.Lfs.Authenticator.GitHub;
-using Estranged.Lfs.Authenticator.BitBucket;
 
 namespace Estranged.Lfs.Hosting.Lambda
 {
@@ -30,12 +31,15 @@ namespace Estranged.Lfs.Hosting.Lambda
             const string S3AccessKey = "S3_ACCESS_KEY";
             const string S3AccessSecret = "S3_ACCESS_SECRET";
 
+            const string LfsAzureStorageConnectionStringVariable = "LFS_AZUREBLOB_CONNECTIONSTRING";
+            const string LfsAzureStorageContainerNameVariable = "LFS_AZUREBLOB_CONTAINERNAME";
 
             var config = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
                 .Build();
 
-            string lfsBucket = config[LfsBucketVariable] ?? throw new InvalidOperationException($"Missing environment variable {LfsBucketVariable}");
+            string lfsBucket = config[LfsBucketVariable];
+            string lfsAzureStorageConnectionString = config[LfsAzureStorageConnectionStringVariable];
             string lfsUsername = config[LfsUsernameVariable];
             string lfsPassword = config[LfsPasswordVariable];
             string gitHubOrganisation = config[GitHubOrganisationVariable];
@@ -47,6 +51,8 @@ namespace Estranged.Lfs.Hosting.Lambda
             string s3AccessKey = config[S3AccessKey];
             string s3AccessSecret = config[S3AccessSecret];
 
+            bool isS3Storage = !string.IsNullOrWhiteSpace(lfsBucket);
+            bool isAzureStorage = !string.IsNullOrWhiteSpace(lfsAzureStorageConnectionString);
             bool isDictionaryAuthentication = !string.IsNullOrWhiteSpace(lfsUsername) && !string.IsNullOrWhiteSpace(lfsPassword);
             bool isGitHubAuthentication = !string.IsNullOrWhiteSpace(gitHubOrganisation) && !string.IsNullOrWhiteSpace(gitHubRepository);
             bool isBitBucketAuthentication = !string.IsNullOrWhiteSpace(bitBucketWorkspace) && !string.IsNullOrWhiteSpace(bitBucketRepository);
@@ -73,13 +79,29 @@ namespace Estranged.Lfs.Hosting.Lambda
                 services.AddLfsBitBucketAuthenticator(new BitBucketAuthenticatorConfig { Workspace = bitBucketWorkspace, Repository = bitBucketRepository });
             }
 
-            // Check S3 config
+            if (isS3Storage)
+            {
+                // Check S3 config
             if (string.IsNullOrWhiteSpace(s3Region) || string.IsNullOrWhiteSpace(s3AccessKey) || string.IsNullOrWhiteSpace(s3AccessSecret))
             {
                 throw new InvalidOperationException($"Uncomplete S3 configuration. Please set S3_REGION : Object Storage OVH public region in lower case without number (ex: sbg). Please set S3_ACCESS_KEY: from RC file. Please set S3_ACCESS_SECRET: from RC file. See https://docs.ovh.com/gb/en/public-cloud/access_and_security_in_horizon/");
             }
 
             services.AddLfsS3Adapter(new S3BlobAdapterConfig { Bucket = lfsBucket }, new AmazonS3Client(s3AccessKey, s3AccessSecret, new AmazonS3Config { UseAccelerateEndpoint = s3Acceleration, ServiceURL = $"https://s3.{s3Region}.cloud.ovh.net", AuthenticationRegion = s3Region, SignatureVersion = "V4" }));
+            }
+            else if (isAzureStorage)
+            {
+                services.AddLfsAzureBlobAdapter(new AzureBlobAdapterConfig
+                {
+                    ConnectionString = lfsAzureStorageConnectionString,
+                    ContainerName = config[LfsAzureStorageContainerNameVariable]
+                });
+            }
+            else
+            {
+                throw new InvalidOperationException($"Missing environment variable {LfsBucketVariable} or {LfsAzureStorageConnectionStringVariable}.");
+            }
+
             services.AddLfsApi();
 
             services.AddLogging(x => x.AddLambdaLogger());

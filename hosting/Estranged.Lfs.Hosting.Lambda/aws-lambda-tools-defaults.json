@@ -1,11 +1,11 @@
 {
   "configuration": "Release",
   "environment-variables": "LFS_BUCKET=OVH_ObjectStorage_Name;LFS_USERNAME=AWS_STACK_ParameterUsername;LFS_PASSWORD=AWS_STACK_ParameterPassword;S3_ACCESS_KEY=OVH_AccesKeyAWS;S3_ACCESS_SECRET=OVH_AccesSecretAWS;S3_REGION=OVH_Region",
-  "framework": "netcoreapp3.1",
+  "framework": "net6.0",
   "function-handler": "Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync",
   "function-memory-size": 256,
   "function-name": "AWS_STACK_LAMBDA_NAME",
-  "function-runtime": "dotnetcore6.0",
+  "function-runtime": "dotnet6",
   "function-timeout": 30,
   "profile": "default",
   "region": "eu-west-1",
