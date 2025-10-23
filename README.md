@@ -146,11 +146,11 @@ url = https://localhost:5001/
 {
   "configuration": "Release",
   "environment-variables": "LFS_BUCKET=OVH_ObjectStorage_Name;LFS_USERNAME=AWS_STACK_ParameterUsername;LFS_PASSWORD=AWS_STACK_ParameterPassword;S3_ACCESS_KEY=OVH_AccesKeyAWS;S3_ACCESS_SECRET=OVH_AccesSecretAWS;S3_REGION=OVH_Region", // can be found and changed in Lambda configuration UI
-  "framework": "net6.0",
+  "framework": "net8.0",
   "function-handler": "Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync",
   "function-memory-size": 256,
   "function-name": "AWS_STACK_NAME", // lambda name must be same as stack name
-  "function-runtime": "dotnet6",
+  "function-runtime": "dotnet8",
   "function-timeout": 30,
   "profile": "default", // AWS connexion profile
   "region": "eu-west-1", // AWS public region

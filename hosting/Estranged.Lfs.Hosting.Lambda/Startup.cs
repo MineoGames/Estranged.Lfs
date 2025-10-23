@@ -58,7 +58,7 @@ namespace Estranged.Lfs.Hosting.Lambda
             bool isBitBucketAuthentication = !string.IsNullOrWhiteSpace(bitBucketWorkspace) && !string.IsNullOrWhiteSpace(bitBucketRepository);
 
             // If all authentication mechanims are set, or none are set throw an error
-            if (new[] {isDictionaryAuthentication, isGitHubAuthentication, isBitBucketAuthentication}.Count(x => x) != 1)
+            if (new[] { isDictionaryAuthentication, isGitHubAuthentication, isBitBucketAuthentication }.Count(x => x) != 1)
             {
                 throw new InvalidOperationException($"Unable to detect authentication mechanism. Please set either {LfsUsernameVariable} and {LfsPasswordVariable} for simple user/password auth" +
                                                     $" or {GitHubOrganisationVariable} or {GitHubRepositoryVariable} for authentication against that repository on GitHub or {BitBucketWorkspaceVariable} or {BitBucketRepositoryVariable} for authentication against that repository on Bitbucket");
@@ -82,12 +82,12 @@ namespace Estranged.Lfs.Hosting.Lambda
             if (isS3Storage)
             {
                 // Check S3 config
-            if (string.IsNullOrWhiteSpace(s3Region) || string.IsNullOrWhiteSpace(s3AccessKey) || string.IsNullOrWhiteSpace(s3AccessSecret))
-            {
-                throw new InvalidOperationException($"Uncomplete S3 configuration. Please set S3_REGION : Object Storage OVH public region in lower case without number (ex: sbg). Please set S3_ACCESS_KEY: from RC file. Please set S3_ACCESS_SECRET: from RC file. See https://docs.ovh.com/gb/en/public-cloud/access_and_security_in_horizon/");
-            }
+                if (string.IsNullOrWhiteSpace(s3Region) || string.IsNullOrWhiteSpace(s3AccessKey) || string.IsNullOrWhiteSpace(s3AccessSecret))
+                {
+                    throw new InvalidOperationException($"Uncomplete S3 configuration. Please set S3_REGION : Object Storage OVH public region in lower case without number (ex: sbg). Please set S3_ACCESS_KEY: from RC file. Please set S3_ACCESS_SECRET: from RC file. See https://docs.ovh.com/gb/en/public-cloud/access_and_security_in_horizon/");
+                }
 
-            services.AddLfsS3Adapter(new S3BlobAdapterConfig { Bucket = lfsBucket }, new AmazonS3Client(s3AccessKey, s3AccessSecret, new AmazonS3Config { UseAccelerateEndpoint = s3Acceleration, ServiceURL = $"https://s3.{s3Region}.cloud.ovh.net", AuthenticationRegion = s3Region, SignatureVersion = "V4" }));
+                services.AddLfsS3Adapter(new S3BlobAdapterConfig { Bucket = lfsBucket }, new AmazonS3Client(s3AccessKey, s3AccessSecret, new AmazonS3Config { UseAccelerateEndpoint = s3Acceleration, ServiceURL = $"https://s3.{s3Region}.io.cloud.ovh.net", AuthenticationRegion = s3Region, SignatureVersion = "V4" }));
             }
             else if (isAzureStorage)
             {
