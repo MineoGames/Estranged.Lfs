@@ -62,7 +62,7 @@ Resources:
             Handler: Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync
             MemorySize: 512
             Role: !GetAtt SigningLambdaRole.Arn
-            Runtime: dotnetcore3.1
+            Runtime: dotnet8
             Timeout: 30
             Environment:
                 Variables:
