@@ -10,7 +10,7 @@ A Git LFS backend which provides pluggable authentication and blob store adapter
 services.AddLfs();
 ```
 
-2. Register an implementation for IBlobAdapter and IAuthenticator. Amazon AWS S3 and Azure Blob Storage are provided out of the box:
+2. Register an implementation for IBlobAdapter and IAuthenticator. Amazon AWS S3, S3-compatible and Azure Blob Storage are provided out of the box:
 
 ```csharp
 var s3BlobConfig = new S3BlobAdapterConfig
@@ -111,13 +111,19 @@ The former is a simple example using only Asp.NET components, and the latter is 
 
 ### Asp.NET version
 
-1. Edit this line to suit to your environment (using _aws_access_key_id_ and _aws_secret_access_key_ of the .aws/credential file > ovh profile)
-`services.AddLfsS3Adapter(new S3BlobAdapterConfig{Bucket = "objectContainerName"}, new AmazonS3Client("MyAccesKeyAWS", "MyAccesSecretAWS", new AmazonS3Config { ServiceURL = "https://s3.MyPublicRegionLowerCase.cloud.ovh.net" }));`
-           
+1. Edit the variables values to suit to your environment
+
+```
+   LfsBucket // Mandatory: Name of S3 bucket
+   S3AccessKeyId // Optional: _aws_access_key_id_ of the .aws/credential file for your custom s3 profile
+   S3AccessKeySecret // Optional: _aws_secret_access_key_ of the .aws/credential file for your custom s3 profile
+   S3Region // Optional: region in custom S3
+   S3ServiceURL // Optional: endpoint of custom S3
+```           
 
 2. It can be launched in VS by choosing _Estranged.Lfs.Hosting.AspNet_ (not the default _IIS Express_ option that doesnt work).
 
- ![image](https://user-images.githubusercontent.com/2952456/89800274-d82c9380-db2e-11ea-85bb-3fc8652e3e9d.png)
+![image](https://user-images.githubusercontent.com/2952456/89800274-d82c9380-db2e-11ea-85bb-3fc8652e3e9d.png)
  
 3. Or it can be published in folder, then launched with _Estranged.Lfs.Hosting.AspNet.exe_
 
@@ -132,9 +138,9 @@ The former is a simple example using only Asp.NET components, and the latter is 
 url = https://localhost:5001/
 ```
 6. From git repo Commit lfs file and Push, and enter when asked the user and password set by this line 
-`  services.AddSingleton<IAuthenticator>(x => new DictionaryAuthenticator(new Dictionary<string, string> { { "userAskedBySourceTree", "passwordAskedBySourceTree" } }));`
+`  services.AddSingleton<IAuthenticator>(x => new DictionaryAuthenticator(new Dictionary<string, string> { { "usernametest", "passwordtest" } }));`
 
-7. The pushed file is now present in OVH Object Storage
+7. The pushed file is now present in custom S3 Storage
 ![image](https://user-images.githubusercontent.com/2952456/89806464-5e4cd800-db37-11ea-85bd-9ce724e7ee0e.png)
 
 #### Deploying to Lambda
@@ -144,27 +150,32 @@ url = https://localhost:5001/
 3. Edit the `aws-lambda-tools-defaults.json` file to suit your environment setup:
 ```javascript
 {
-  "configuration": "Release",
-  "environment-variables": "LFS_BUCKET=OVH_ObjectStorage_Name;LFS_USERNAME=AWS_STACK_ParameterUsername;LFS_PASSWORD=AWS_STACK_ParameterPassword;S3_ACCESS_KEY=OVH_AccesKeyAWS;S3_ACCESS_SECRET=OVH_AccesSecretAWS;S3_REGION=OVH_Region", // can be found and changed in Lambda configuration UI
-  "framework": "net10.0",
-  "function-handler": "Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync",
-  "function-memory-size": 256,
-  "function-name": "AWS_STACK_NAME", // lambda name must be same as stack name
-  "function-runtime": "dotnet8",
-  "function-timeout": 30,
-  "profile": "default", // AWS connexion profile
-  "region": "eu-west-1", // AWS public region
-  "s3-bucket": "AWS_SHARED_BETWEEN_STACK_S3_NAME" // a S3 bucket is needed to upload the modele/output of the stack, must be outside of the stack (shared between all stacks) 
+    "profile": "default", // AWS connexion profile
+    "configuration": "Release",
+    "framework": "net6.0",
+    "function-handler": "Estranged.Lfs.Hosting.Lambda::Estranged.Lfs.Hosting.Lambda.LambdaEntryPoint::FunctionHandlerAsync",
+    "function-memory-size": 256,
+    "function-timeout": 30,
+    "function-runtime": "dotnet6",
+    "region": "<aws region>", // AWS public region
+    "s3-bucket": "<s3 bucket to upload the lambda to>", // S3 bucket needed to upload the modele/output of the stack, must be outside of the stack (shared between all stacks)
+    "s3-prefix": "<path in s3 to upload the lambda to>",
+    "function-name": "<lambda name to deploy or update>", // lambda name must be same as stack name
+    // Set other variables required by the Lambda function
+    "environment-variables": "LFS_BUCKET=<lfs s3 bucket>;LFS_USERNAME=<AWS_STACK_ParameterUsername>;LFS_PASSWORD=<AWS_STACK_ParameterPassword>;S3_ACCESS_KEY=<S3 AccessKey>;S3_ACCESS_SECRET=<S3 AccessSecret>;S3_REGION=<Custom S3 Region>;S3_SERVICE_URL=<Custom S3 EndPoint>;<key>=<value>", // can be found and changed in Lambda configuration UI"
 }
 ```
-5. Run `dotnet lambda deploy-serverless AWS_STACK_NAME --template-parameters GitLfsUsername=AWS_STACK_ParameterUsername;GitLfsPassword=AWS_STACK_ParameterPassword -t modele.yaml ` to deploy the stack
-6. Run `dotnet lambda deploy-function` to deploy the code of the lambda function
-7. Change the .lfconfig of the GIT project to send requests to the lambda function (the URL was in 5. output)
+4. Run `dotnet lambda deploy-serverless` to deploy the stack
+
+    If the stack is already deployed, run `dotnet lambda deploy-function` to redeploy only the code of the lambda function
+
+5. Change the .lfconfig of the GIT project to send requests to the lambda function (the URL was in 4. output)
 ```
 [lfs]
-url = https://EXAMPLE.execute-api.eu-west-1.amazonaws.com/lfs
+url = https://xxxxxxxxx.execute-api.eu-west-1.amazonaws.com/lfs
 ```
-8. Commit and push LFS files, when prompt enter AWS_STACK_ParameterUsername and AWS_STACK_ParameterPassword, the files can be seen in OHV Storage !
+
+6. Commit and push LFS files, when prompt enter AWS_STACK_ParameterUsername and AWS_STACK_ParameterPassword, the files can be seen in your S3 storage!
 
 **Instead of using user/password authentication, it is possible to use Github or Bitbucket authentication.**
 
@@ -177,3 +188,5 @@ Edit the `aws-lambda-tools-defaults.json` file and redeploy the lambda (or edit 
  (example with bitbucket):
  
  ``` "environment-variables": "BITBUCKET_WORKSPACE=REPO_WORKSPACE,BITBUCKET_REPOSITORY=REPO_NAME,..."```
+
+ In this case, use your platform username and dedicated auth token to authenticate.

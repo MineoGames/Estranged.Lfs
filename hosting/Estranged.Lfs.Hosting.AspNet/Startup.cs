@@ -3,7 +3,6 @@ using Estranged.Lfs.Adapter.S3;
 using Estranged.Lfs.Api;
 using Estranged.Lfs.Data;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,8 +31,20 @@ namespace Estranged.Lfs.Hosting.AspNet
             });
 
             services.AddSingleton<IAmazonS3, AmazonS3Client>();
-            services.AddLfsS3Adapter(new S3BlobAdapterConfig { Bucket = "test-ovh" }, new AmazonS3Client("MyAccesKeyAWS", "MyAccesSecretAWS", new AmazonS3Config { ServiceURL = $"https://s3.{myEndpointRegion}.io.cloud.ovh.net", AuthenticationRegion = myEndpointRegion, SignatureVersion = "V4" }));
-            services.AddSingleton<IAuthenticator>(x => new DictionaryAuthenticator(new Dictionary<string, string> { { "userAskedBySourceTree", "passwordAskedBySourceTree" } }));
+            const string LfsBucket = "estranged-lfs-test";
+            const string S3AccessKeyId = "";
+            const string S3AccessKeySecret = "";
+            const string S3Region = "";
+            const string S3ServiceURL = "";
+            if (!string.IsNullOrWhiteSpace(S3ServiceURL) && !string.IsNullOrWhiteSpace(S3Region) && !string.IsNullOrWhiteSpace(S3AccessKeyId) && !string.IsNullOrWhiteSpace(S3AccessKeySecret))
+            {
+                services.AddLfsS3Adapter(new S3BlobAdapterConfig { Bucket = LfsBucket }, new AmazonS3Client(S3AccessKeyId, S3AccessKeySecret, new AmazonS3Config { ServiceURL = S3ServiceURL, AuthenticationRegion = S3Region, SignatureVersion = "V4" }));
+            }
+            else
+            {
+                services.AddLfsS3Adapter(new S3BlobAdapterConfig { Bucket = LfsBucket }, new AmazonS3Client());
+            }
+            services.AddSingleton<IAuthenticator>(x => new DictionaryAuthenticator(new Dictionary<string, string> { { "usernametest", "passwordtest" } }));
             services.AddLfsApi();
         }
 
