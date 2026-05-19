@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <Version>5.0.0</Version>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Authors>alanedwardes</Authors>
     <Description>A GitHub authentication adapter for Estranged.Lfs.Api.</Description>
     <PackageId>Estranged.Lfs.Authenticator.GitHub</PackageId>

@@ -1,17 +1,25 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Amazon.S3;
+using Estranged.Lfs.Adapter.S3;
+using Estranged.Lfs.Api;
+using Estranged.Lfs.Data;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Estranged.Lfs.Api;
-using Amazon.S3;
-using Microsoft.Extensions.Configuration;
-using Estranged.Lfs.Adapter.S3;
-using Estranged.Lfs.Data;
 using System.Collections.Generic;
 
 namespace Estranged.Lfs.Hosting.AspNet
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             //IConfiguration credentials = new ConfigurationBuilder().AddJsonFile("credentials.json").Build();
@@ -29,7 +37,7 @@ namespace Estranged.Lfs.Hosting.AspNet
             services.AddLfsApi();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
