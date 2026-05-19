@@ -1,10 +1,6 @@
-# Estranged.Lfs ![Build status](https://github.com/alanedwardes/Estranged.Lfs/workflows/.NET%20Core/badge.svg)
-
-### For setup instructions, see https://alanedwardes.com/blog/posts/serverless-git-lfs-for-game-dev/
-
----
-
+# Estranged.Lfs ![Build status](https://github.com/mineogames/Estranged.Lfs/workflows/.NET%20Core/badge.svg)
 A Git LFS backend which provides pluggable authentication and blob store adapters. It is designed to run in a serverless environment to be used in conjunction with a Git provider such as GitHub or BitBucket, or self hosted Git.
+# This a modified version to work with OVH Object Storage instead of AWS S3.
 
 ## Basic Usage
 
@@ -152,7 +148,6 @@ url = https://localhost:5001/
 1. Head over to the `Estranged.Lfs.Hosting.Lambda` project in the `hosting` folder.
 2. Install the `dotnet-lambda` global tool from AWS: https://github.com/aws/aws-extensions-for-dotnet-cli
 3. Edit the `aws-lambda-tools-defaults.json` file to suit your environment setup:
-
 ```javascript
 {
     "profile": "default", // AWS connexion profile

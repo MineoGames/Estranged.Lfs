@@ -12,9 +12,17 @@ namespace Estranged.Lfs.Hosting.AspNet
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            IConfiguration credentials = new ConfigurationBuilder().AddJsonFile("credentials.json").Build();
+            //IConfiguration credentials = new ConfigurationBuilder().AddJsonFile("credentials.json").Build();
+            var myEndpointRegion = "sbg";
 
             services.AddLogging(x =>
             {
@@ -40,7 +48,7 @@ namespace Estranged.Lfs.Hosting.AspNet
             services.AddLfsApi();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());

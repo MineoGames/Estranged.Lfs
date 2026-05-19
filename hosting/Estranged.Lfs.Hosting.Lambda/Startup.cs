@@ -27,6 +27,11 @@ namespace Estranged.Lfs.Hosting.Lambda
             const string BitBucketWorkspaceVariable = "BITBUCKET_WORKSPACE";
             const string BitBucketRepositoryVariable = "BITBUCKET_REPOSITORY";
             const string S3AccelerationVariable = "S3_ACCELERATION";
+            const string S3Region = "S3_REGION";
+            const string S3ServiceURL = "S3_SERVICE_URL";
+            const string S3AccessKey = "S3_ACCESS_KEY";
+            const string S3AccessSecret = "S3_ACCESS_SECRET";
+
             const string LfsAzureStorageConnectionStringVariable = "LFS_AZUREBLOB_CONNECTIONSTRING";
             const string LfsAzureStorageContainerNameVariable = "LFS_AZUREBLOB_CONTAINERNAME";
             const string S3ServiceURL = "S3_SERVICE_URL";
@@ -59,10 +64,10 @@ namespace Estranged.Lfs.Hosting.Lambda
             bool isBitBucketAuthentication = !string.IsNullOrWhiteSpace(bitBucketWorkspace) && !string.IsNullOrWhiteSpace(bitBucketRepository);
 
             // If all authentication mechanims are set, or none are set throw an error
-            if (new[] {isDictionaryAuthentication, isGitHubAuthentication, isBitBucketAuthentication}.Count(x => x) != 1)
+            if (new[] { isDictionaryAuthentication, isGitHubAuthentication, isBitBucketAuthentication }.Count(x => x) != 1)
             {
-                throw new InvalidOperationException($"Unable to detect authentication mechanism. Please set {LfsUsernameVariable} and {LfsPasswordVariable} for simple user/password auth" +
-                                                    $" or {GitHubOrganisationVariable} and {GitHubRepositoryVariable} for authentication against that repository on GitHub");
+                throw new InvalidOperationException($"Unable to detect authentication mechanism. Please set either {LfsUsernameVariable} and {LfsPasswordVariable} for simple user/password auth" +
+                                                    $" or {GitHubOrganisationVariable} or {GitHubRepositoryVariable} for authentication against that repository on GitHub or {BitBucketWorkspaceVariable} or {BitBucketRepositoryVariable} for authentication against that repository on Bitbucket");
             }
 
             if (isDictionaryAuthentication)
